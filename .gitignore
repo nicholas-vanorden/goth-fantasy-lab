@@ -27,6 +27,8 @@ go.work.sum
 # env file
 .env
 
-# Editor/IDE
-# .idea/
-# .vscode/
+# vs code
+.vscode/
+
+# templ
+*_templ.go

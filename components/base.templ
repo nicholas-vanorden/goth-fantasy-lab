@@ -1,0 +1,58 @@
+package components
+
+templ Base(title string) {
+    <!DOCTYPE html>
+    <html lang="eng">
+        <head>
+            <meta charset="UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <title>{title}</title>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+            <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js" integrity="sha384-ZBXiYtYQ6hJ2Y0ZNoYuI+Nq5MqWBr+chMrS/RkXpNzQCApHEhOt2aY8EJgqwHLkJ" crossorigin="anonymous"></script>
+        </head>
+        <body>
+        <div class="container">
+            <h1>{title}</h1>
+            { children... }
+        </div>
+        </body>
+    </html>
+    <style>
+        .player-detail {
+            border: 1px solid #ccc;
+            padding: 1em;
+            border-radius: 5px;
+        }
+        .search {
+            margin-bottom: 1em;
+        }
+        .player-item a {
+            font-weight: bold;
+            font-size: 1.1em;
+            text-decoration: none;
+        }
+        .player-item a:hover {
+            text-decoration: underline;
+        }
+        .qb {
+            color: red;
+            font-weight: bold;
+        }
+        .rb {
+            color: green;
+            font-weight: bold;
+        }
+        .wr {
+            color: blue;
+            font-weight: bold;
+        }
+        .te {
+            color: purple;
+            font-weight: bold;
+        }
+        .k {
+            color: orange;
+            font-weight: bold;
+        }
+    </style>
+}
