@@ -1,0 +1,53 @@
+package components
+
+import (
+    "goth-ffb-players/models"
+    "strings"
+)
+
+templ Players(players []models.Player) {
+    @Base("FFB Players") {
+        <div class="search">
+            <input
+                type="search"
+                name="search"
+                hx-get="/search"
+                hx-trigger="keyup changed delay:1s"
+                hx-target="#player-list"
+            />
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>Passing Yards</th>
+                    <th>Rushing Yards</th>
+                    <th>Receiving Yards</th>
+                </tr>
+            </thead>
+            <tbody id="player-list" class="player-list">
+                @PlayerList(players)
+            </tbody>
+        </table>
+        
+    }
+}
+
+templ PlayerList(players []models.Player) {
+    if len(players) > 0 {
+        for _, player := range players {
+            <tr class="player-item">
+                <td>
+                    <a href={templ.SafeURL("/players/" + player.Id)}>{player.String()}</a>
+                    <span class={strings.ToLower(player.Position.String())}>{player.Position.String()}</span>&nbsp;<span>#{player.Jersey}</span>
+                    <p>{player.Team}</p>
+                </td>
+                <td>todo</td>
+                <td>todo</td>
+                <td>todo</td>
+            </tr>
+        }
+    } else {
+        <tr><td colspan="4">No players found</td></tr>
+    }
+}
