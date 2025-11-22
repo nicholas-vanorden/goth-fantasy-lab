@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"goth-ffb-players/components"
-	"goth-ffb-players/models"
+	"goth-ffb-players/internal/models"
+	"goth-ffb-players/web/components"
 	"net/http"
 	"strings"
 )
