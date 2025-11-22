@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"goth-ffb-players/handlers"
+	"goth-ffb-players/internal/handlers"
 )
 
 func main() {
