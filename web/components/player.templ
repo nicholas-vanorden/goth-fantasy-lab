@@ -1,16 +1,16 @@
 package components
 
 import (
-    "goth-ffb-players/internal/models"
+    m "goth-ffb-players/internal/models"
 )
 
-templ PlayerDetail(player models.Player) {
-    @Base(player.String()) {
+templ PlayerDetail(player m.Player) {
+    @Base(player.Name.Full) {
         <div class="player-detail">
-            <p><strong>Position:</strong> {player.Position.String()}</p>
+            <p><strong>Position:</strong> {player.Position}</p>
             <p><strong>Jersey:</strong> {player.Jersey}</p>
             <p><strong>Team:</strong> {player.Team}</p>
-            <p>{player.Outlook}</p>
+            <p>{player.StatsXML.XML}</p>
         </div>
     }
 }

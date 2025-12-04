@@ -8,6 +8,7 @@ templ Base(title string) {
             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <title>{title}</title>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+            <link rel="stylesheet" href="/static/style.css"/>
             <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.7/dist/htmx.min.js" integrity="sha384-ZBXiYtYQ6hJ2Y0ZNoYuI+Nq5MqWBr+chMrS/RkXpNzQCApHEhOt2aY8EJgqwHLkJ" crossorigin="anonymous"></script>
         </head>
         <body>
@@ -17,7 +18,4 @@ templ Base(title string) {
         </div>
         </body>
     </html>
-    <style>
-        @import "../static/style.css";
-    </style>
 }

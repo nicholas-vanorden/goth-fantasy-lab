@@ -1,11 +1,19 @@
 package components
 
 import (
-    "goth-ffb-players/internal/models"
+    m "goth-ffb-players/internal/models"
     "strings"
+    "strconv"
 )
 
-templ Players(players []models.Player) {
+func FloatToString(f *float64) string {
+    if f == nil {
+        return "0"
+    }
+    return strconv.FormatFloat(*f, 'f', 2, 64)
+}
+
+templ Players(players []m.Player) {
     @Base("FFB Players") {
         <div class="search">
             <input
@@ -20,9 +28,7 @@ templ Players(players []models.Player) {
             <thead>
                 <tr>
                     <th>Player</th>
-                    <th>Passing Yards</th>
-                    <th>Rushing Yards</th>
-                    <th>Receiving Yards</th>
+                    <th>FPTs</th>
                 </tr>
             </thead>
             <tbody id="player-list" class="player-list">
@@ -33,21 +39,37 @@ templ Players(players []models.Player) {
     }
 }
 
-templ PlayerList(players []models.Player) {
+// type Player struct {
+// 	StatsXML    PlayerStats
+// 	PlayerKey   string      
+// 	PlayerID    string      
+// 	Name        Name        
+// 	Jersey      string      
+// 	Position    string      
+// 	TeamAbr     string     
+// 	Team        string      
+// 	HeadshotUrl string      
+// 	// Stats/points fields if available:
+// 	SeasonPoints *float64 
+// }
+// type Name struct {
+// 	Full string `xml:"full"`
+// }
+
+templ PlayerList(players []m.Player) {
     if len(players) > 0 {
         for _, player := range players {
             <tr class="player-item">
                 <td>
-                    <a href={templ.SafeURL("/players/" + player.Id)}>{player.String()}</a>
-                    <span class={strings.ToLower(player.Position.String())}>{player.Position.String()}</span>&nbsp;<span>#{player.Jersey}</span>
+                    <img src={player.HeadshotUrl} alt={"Headshot of " + player.Name.Full} width="50" height="50"/>
+                    <a href={templ.SafeURL("/players/" + player.PlayerKey)}>{player.Name.Full}</a>
+                    <span class={strings.ToLower(player.Position)}>{player.Position}</span>&nbsp;<span>#{player.Jersey}</span>
                     <p>{player.Team}</p>
                 </td>
-                <td>todo</td>
-                <td>todo</td>
-                <td>todo</td>
+                <td>{FloatToString(player.SeasonPoints)}</td>
             </tr>
         }
     } else {
-        <tr><td colspan="4">No players found</td></tr>
+        <tr><td colspan="2">No players found</td></tr>
     }
 }

@@ -32,3 +32,16 @@ go.work.sum
 
 # templ
 *_templ.go
+
+# certificates
+*.pem
+*.key
+*.crt
+*.token
+token.json
+
+# Logs
+*.log
+
+# Miscellaneous test files
+test.xml
