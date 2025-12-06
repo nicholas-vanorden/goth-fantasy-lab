@@ -62,7 +62,7 @@ templ PlayerList(players []m.Player) {
             <tr class="player-item">
                 <td>
                     <img src={player.HeadshotUrl} alt={"Headshot of " + player.Name.Full} width="50" height="50"/>
-                    <a href={templ.SafeURL("/players/" + player.PlayerKey)}>{player.Name.Full}</a>
+                    <a href={templ.SafeURL("/players/" + player.PlayerID)}>{player.Name.Full}</a>
                     <span class={strings.ToLower(player.Position)}>{player.Position}</span>&nbsp;<span>#{player.Jersey}</span>
                     <p>{player.Team}</p>
                 </td>

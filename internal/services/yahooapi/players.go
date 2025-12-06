@@ -8,16 +8,32 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
+)
+
+var (
+	playersCache     []m.Player
+	playersCacheOnce sync.Once
 )
 
 func FetchPlayers(client *http.Client) ([]m.Player, error) {
-	leagueKeys, err := fetchUserLeagueKeys(client)
+	var err error
+
+	playersCacheOnce.Do(func() {
+		playersCache, err = fetchPlayers(client)
+	})
+
+	return playersCache, err
+}
+
+func fetchPlayers(client *http.Client) ([]m.Player, error) {
+	leagueKeys, err := fetchCachedUserLeagueKeys(client)
 	if err != nil {
 		return nil, err
 	}
 
 	url := fmt.Sprintf(
-		os.Getenv("YAHOO_FANTASY_API_PLAYERS"),
+		os.Getenv("YAHOO_FANTASY_API_PLAYERS_URL"),
 		leagueKeys[0],
 	)
 
@@ -41,8 +57,23 @@ func FetchPlayers(client *http.Client) ([]m.Player, error) {
 	return presp.League.Players.Players, nil
 }
 
+var (
+	leaguesCache     []string
+	leaguesCacheOnce sync.Once
+)
+
+func fetchCachedUserLeagueKeys(client *http.Client) ([]string, error) {
+	var err error
+
+	leaguesCacheOnce.Do(func() {
+		leaguesCache, err = fetchUserLeagueKeys(client)
+	})
+
+	return leaguesCache, err
+}
+
 func fetchUserLeagueKeys(client *http.Client) ([]string, error) {
-	url := os.Getenv("YAHOO_FANTASY_API_LEAGUES")
+	url := os.Getenv("YAHOO_FANTASY_API_LEAGUES_URL")
 
 	resp, err := client.Get(url)
 	if err != nil {

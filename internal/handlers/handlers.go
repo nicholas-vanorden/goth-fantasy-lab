@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strings"
 
 	"golang.org/x/oauth2"
 )
@@ -102,16 +103,26 @@ func Players(authCache *auth.Cache) http.HandlerFunc {
 
 func SearchPlayers(authCache *auth.Cache) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//query := strings.ToLower(r.URL.Query().Get("search"))
+		query := strings.ToLower(r.URL.Query().Get("search"))
 		var results []models.Player
 
-		// TODO: cache priviously fetched players instead of calling API again
-		// for _, player := range models.Players {
-		// 	if strings.Contains(strings.ToLower(player.FirstName), query) ||
-		// 		strings.Contains(strings.ToLower(player.LastName), query) {
-		// 		results = append(results, player)
-		// 	}
-		// }
+		client, err := authCache.Client(r.Context())
+		if err != nil {
+			log.Printf("Failed to create authenticated client: %v", err)
+			http.Redirect(w, r, "/oauth/login", http.StatusFound)
+		}
+
+		players, err := api.FetchPlayers(client)
+		if err != nil {
+			http.Error(w, "Failed to fetch players: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		for _, player := range players {
+			if strings.Contains(strings.ToLower(player.Name.Full), query) {
+				results = append(results, player)
+			}
+		}
 
 		components.PlayerList(results).Render(r.Context(), w)
 	}
@@ -119,16 +130,35 @@ func SearchPlayers(authCache *auth.Cache) http.HandlerFunc {
 
 func PlayerDetail(authCache *auth.Cache) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// id := r.PathValue("id")
+		id := r.PathValue("id")
 
-		// TODO: cache priviously fetched players instead of calling API again
-		// for _, player := range models.Players {
-		// 	if player.Id == id {
-		// 		component := components.PlayerDetail(player)
-		// 		component.Render(r.Context(), w)
-		// 		return
-		// 	}
-		// }
+		client, err := authCache.Client(r.Context())
+		if err != nil {
+			log.Printf("Failed to create authenticated client: %v", err)
+			http.Redirect(w, r, "/oauth/login", http.StatusFound)
+		}
+
+		players, err := api.FetchPlayers(client)
+		if err != nil {
+			http.Error(w, "Failed to fetch players: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		statDefs, err := api.LoadStatDefinitions(client)
+		if err != nil {
+			http.Error(w, "Failed to fetch stat definitions: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		for _, player := range players {
+			if player.PlayerID == id {
+				playerXML := []byte("<player>" + player.StatsXML.XML + "</player>")
+				stats, _ := api.ParsePlayerStats(playerXML, statDefs)
+				component := components.PlayerDetail(player, stats)
+				component.Render(r.Context(), w)
+				return
+			}
+		}
 		http.NotFound(w, r)
 	}
 }
