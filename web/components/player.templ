@@ -4,13 +4,16 @@ import (
     m "goth-ffb-players/internal/models"
 )
 
-templ PlayerDetail(player m.Player) {
+templ PlayerDetail(player m.Player, stats map[string]float64) {
     @Base(player.Name.Full) {
         <div class="player-detail">
             <p><strong>Position:</strong> {player.Position}</p>
             <p><strong>Jersey:</strong> {player.Jersey}</p>
             <p><strong>Team:</strong> {player.Team}</p>
-            <p>{player.StatsXML.XML}</p>
+            for statID, value := range stats {
+                <p><strong>{statID}:</strong> {value}</p>
+            }
         </div>
+        <a href={templ.SafeURL("/players")}>Back to Players List</a>
     }
 }
